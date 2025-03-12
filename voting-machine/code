@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Electronic Voting Machine</title>
+    <style>
+        /* --- CSS Styles --- */
+        body {
+            font-family: sans-serif;
+            text-align: center;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .screen {
+            width: 90%;
+            max-width: 700px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background-color: #ffffff;
+            padding: 20px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .header-top-bar {
+            display: flex;
+            width: 100%;
+            margin-bottom: 15px;
+        }
+
+        .header-top-bar div {
+            height: 10px;
+        }
+
+        .header-top-bar div:first-child {
+            background-color: #ff7700;
+            flex-grow: 1;
+            margin-right: 5px;
+        }
+
+        .header-top-bar div:last-child {
+            background-color: #28a745;
+            flex-grow: 1;
+            margin-left: 5px;
+        }
+
+        .header-logo-text {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .header-logo {
+            width: 50px;
+            height: auto;
+            margin-right: 10px;
+        }
+
+        .header-text {
+            flex-grow: 1;
+            text-align: left;
+        }
+
+        .header-text h2 {
+            font-size: 1.5em;
+            margin: 0;
+            color: #333;
+        }
+
+        .header-text p {
+            font-size: 1em;
+            margin: 0;
+            color: #555;
+        }
+
+        .content {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .content-header {
+            font-size: 1.5em;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .language-buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            max-width: 600px;
+            margin-bottom: 20px;
+        }
+
+        .language-buttons button {
+            padding: 10px 15px;
+            font-size: 1em;
+            cursor: pointer;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+
+        .language-buttons button:hover {
+            background-color: #e9e9e9;
+        }
+
+        #simulate-card-scan,
+        #simulate-fingerprint-scan {
+            padding: 12px 30px;
+            background-color: #007bff;
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            margin-top: 15px;
+        }
+
+        #simulate-card-scan:hover,
+        #simulate-fingerprint-scan:hover {
+            background-color: #0056b3;
+        }
+
+        .voter-info {
+            text-align: left;
+            margin-top: 15px;
+        }
+
+        .voter-info p {
+            margin: 5px 0;
+        }
+
+        #verification-message {
+            margin-top: 15px;
+            font-weight: bold;
+        }
+
+        .candidate-list {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+            max-width: 600px;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        .candidate-option {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            cursor: pointer;
+            text-align: left;
+        }
+
+        .candidate-option:hover {
+            background-color: #f0f0f0;
+        }
+
+        .candidate-logo {
+            width: 50px;
+            height: 50px;
+            margin-right: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .candidate-logo img {
+            max-width: 100%;
+            max-height: 100%;
+        }
+
+        .candidate-details {
+            flex-grow: 1;
+        }
+
+        .party-name {
+            font-weight: bold;
+        }
+
+        .candidate-name {
+            font-size: 0.9em;
+            color: #555;
+        }
+
+        .continue-button-area {
+            width: 100%;
+            max-width: 600px;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .continue-button {
+            padding: 12px 30px;
+            background-color: #28a745;
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+        }
+
+        .continue-button:hover {
+            background-color: #218838;
+        }
+
+        .confirmation-box {
+            width: 100%;
+            max-width: 400px;
+            margin-top: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 15px;
+            text-align: left;
+        }
+
+        .confirmation-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .item-label {
+            font-weight: bold;
+            color: #555;
+        }
+
+        .item-value {
+            color: #333;
+        }
+
+        .symbol-area {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .symbol-area img {
+            max-width: 100%;
+            max-height: 100%;
+        }
+
+        .button-area {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            max-width: 400px;
+            margin-top: 20px;
+        }
+
+        .back-button,
+        .confirm-button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+        }
+
+        .back-button {
+            background-color: #6c757d;
+            color: #ffffff;
+        }
+
+        .back-button:hover {
+            background-color: #5a6268;
+        }
+
+        .confirm-button {
+            background-color: #007bff;
+            color: #ffffff;
+        }
+
+        .confirm-button:hover {
+            background-color: #0056b3;
+        }
+
+        .review-text {
+            font-size: 1.1em;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .warning-text {
+            font-size: 0.9em;
+            color: #d9534f;
+            margin-bottom: 15px;
+        }
+
+        .warning-icon {
+            margin-right: 5px;
+        }
+
+        .checkmark-icon {
+            font-size: 5em;
+            color: #28a745;
+            margin-bottom: 15px;
+        }
+
+        .thank-you-text {
+            font-size: 1.5em;
+            color: #333;
+        }
+
+        .footer {
+            background-color: #ffffff;
+            padding: 10px 20px;
+            border-top: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8em;
+            color: #555;
+        }
+
+        .candidate-option.selected {
+            background-color: #e0f7fa;
+            border: 2px solid #00bcd4;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="screen" id="language-selection">
+        <div class="header">
+            <div class="header-top-bar">
+                <div></div>
+                <div></div>
+            </div>
+            <div class="header-logo-text">
+                <img src="eci_logo.png" alt="ECI Logo" class="header-logo">
+                <div class="header-text">
+                    <h2>Electronic Voting Machine</h2>
+                    <p>Election Commission of India</p>
+                </div>
+            </div>
+        </div>
+        <div class="content">
+            <h3 class="content-header">Select Your Language / अपनी भाषा चुनें</h3>
+            <div class="language-buttons">
+                <button data-lang="en">English</button>
+                <button data-lang="hi">हिंदी (Hindi)</button>
+                <button data-lang="ml">മലയാളം (Malayalam)</button>
+                <button data-lang="te">తెలుగు (Telugu)</button>
+                <button data-lang="ta">தமிழ் (Tamil)</button>
+                <button data-lang="bn">বাংলা (Bengali)</button>
+                <button data-lang="mr">मराठी (Marathi)</button>
+                <button data-lang="gu">ગુજરાતી (Gujarati)</button>
+            </div>
+        </div>
+        <div class="footer">
+            <p>Secure Voting System</p>
+            <p>Election Commission of India</p>
+        </div>
+    </div>
+
+    <div class="screen" id="voter-id-verification" style="display: none;">
+        <div class="header">
+            <div class="header-top-bar">
+                <div></div>
+                <div></div>
+            </div>
+            <div class="header-logo-text">
+                <img src="eci_logo.png" alt="ECI Logo" class="header-logo">
+                <div class="header-text">
+                    <h2>Electronic Voting Machine</h2>
+                    <p>Election Commission of India</p>
+                </div>
+            </div>
+        </div>
+        <div class="content">
+            <h3 class="content-header">Voter ID Verification</h3>
+            <p>Please swipe your Voter ID card</p>
+            <button id="simulate-card-scan">Simulate Card Scan</button>
+        </div>
+        <div class="footer">
+            <p>Secure Voting System</p>
+            <p>Election Commission of India</p>
+        </div>
+    </div>
+
+    <div class="screen" id="voter-information" style="display: none;">
+        <div class="header">
+            <div class="header-top-bar">
+                <div></div>
+                <div></div>
+            </div>
+            <div class="header-logo-text">
+                <img src="eci_logo.png" alt="ECI Logo" class="header-logo">
+                <div class="header-text">
+                    <h2>Electronic Voting Machine</h2>
+                    <p>Election Commission of India</p>
+                </div>
+            </div>
+        </div>
+        <div class="content">
+            <h3 class="content-header">Voter Information</h3>
+            <h4>Face Recognition</h4>
+            <p>Please look at the camera for verification</p>
+            <div class="voter-info">
+                <p>Name: Rajesh Kumar</p>
+                <p>Voter ID: ABC1234567</p>
+                <p>Age: 35</p>
+                <p>Constituency: New Delhi Central</p>
+            </div>
+            <p id="verification-message">Verifying your identity....</p>
+        </div>
+        <div class="footer">
+            <p>Secure Voting System</p>
+            <p>Election Commission of India</p>
+        </div>
+    </div>
+
+    <div class="screen" id="biometric-verification" style="display: none;">
+        <div class="header">
+            <div class="header-top-bar">
+                <div></div>
+                <div></div>
+            </div>
+            <div class="header-logo-text">
+                <img src="eci_logo.png" alt="ECI Logo" class="header-logo">
+                <div class="header-text">
+                    <h2>Electronic Voting Machine</h2>
+                    <p>Election Commission of India</p>
+                </div>
+            </div>
+        </div>
+        <div class="content">
+            <h3 class="content-header">Biometric Verification</h3>
+            <p>Please place your thumb on the scanner</p>
+            <button id="simulate-fingerprint-scan">Scan Fingerprint</button>
+        </div>
+        <div class="footer">
+            <p>Secure Voting System</p>
+            <p>Election Commission of India</p>
+        </div>
+    </div>
+
+    <div class="screen" id="cast-vote" style="display: none;">
+        <div class="header">
+            <div class="header-top-bar">
+                <div></div>
+                <div></div>
+            </div>
+            <div class="header-logo-text">
+                <img src="eci_logo.png" alt="ECI Logo" class="header-logo">
+                <div class="header-text">
+                    <h2>Electronic Voting Machine</h2>
+                    <p>Election Commission of India</p>
+                </div>
+            </div>
+        </div>
+        <div class="content">
+            <h3 class="content-header">Cast Your Vote</h3>
+            <p>Select your preferred candidate</p>
+            <div class="candidate-list">
+                <div class="candidate-option" data-party="Bharatiya Janata Party" data-candidate="Narendra Modi">
+                    <div class="candidate-logo">
+                        <img src="bjp_logo.png" alt="BJP Logo">
+                    </div>
+                    <div class="candidate-details">
+                        <div class="party-name">Bharatiya Janata Party</div>
+                        <div class="candidate-name">Candidate: Narendra Modi</div>
+                    </div>
+                </div>
+                <div class="candidate-option" data-party="Indian National Congress" data-candidate="Rahul Gandhi">
+                    <div class="candidate-logo">
+                        <img src="inc_logo.png" alt="INC Logo">
+                    </div>
+                    <div class="candidate-details">
+                        <div class="party-name">Indian National Congress</div>
+                        <div class="candidate-name">Candidate: Rahul Gandhi</div>
+                    </div>
+                </div>
+                <div class="candidate-option" data-party="Aam Aadmi Party" data-candidate="Arvind Kejriwal">
+                    <div class="candidate-logo">
+                        <img src="aap_logo.png" alt="AAP Logo">
+                    </div>
+                    <div class="candidate-details">
+                        <div class="party-name">Aam Aadmi Party</div>
+                        <div class="candidate-name">Candidate: Arvind Kejriwal</div>
+                    </div>
+                </div>
+                <div class="candidate-option" data-party="Communist Party of India" data-candidate="Sitaram Yechury">
+                    <div class="candidate-logo">
+                        <img src="cpi_logo.png" alt="CPI Logo">
+                    </div>
+                    <div class="candidate-details">
+                        <div class="party-name">Communist Party of India</div>
+                        <div class="candidate-name">Candidate: Sitaram Yechury</div>
+                    </div>
+                </div>
+                <div class="candidate-option" data-party="All India Trinamool Congress" data-candidate="Mamata Banerjee">
+                    <div class="candidate-logo">
+                        <img src="aitc_logo.png" alt="AITC Logo">
+                    </div>
+                    <div class="candidate-details">
+                        <div class="party-name">All India Trinamool Congress</div>
+                        <div class="candidate-name">Candidate: Mamata Banerjee</div>
+                    </div>
+                </div>
+                <div class="candidate-option" data-party="NOTA (None of the Above)" data-candidate="NOTA">
+                    <div class="candidate-logo" style="background-color: #eee; color: #888;">
+                        X
+                    </div>
+                    <div class="candidate-details">
+                        <div class="party-name">NOTA (None of the Above)</div>
+                        <div class="candidate-name"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="continue-button-area">
+                <button class="continue-button">Continue &gt;</button>
+            </div>
+        </div>
+        <div class="footer">
+            <p>Secure Voting System</p>
+            <p>Election Commission of India</p>
+        </div>
+    </div>
+
+    <div class="screen" id="confirm-vote" style="display: none;">
+        <div class="header">
+            <div class="header-top-bar">
+                <div></div>
+                <div></div>
+            </div>
+            <div class="header-logo-text">
+                <img src="eci_logo.png" alt="ECI Logo" class="header-logo">
+                <div class="header-text">
+                    <h2>Electronic Voting Machine</h2>
+                    <p>Election Commission of India</p>
+                </div>
+            </div>
+        </div>
+        <div class="content">
+            <h3 class="content-header">Confirm Your Vote</h3>
+            <p class="review-text">Please review your selection before confirming</p>
+            <p class="warning-text">
+                <span class="warning-icon">&#9888;</span> Once confirmed, your vote cannot be changed
+            </p>
+            <div class="confirmation-box">
+                <div class="confirmation-item">
+                    <span class="item-label">Party</span>
+                    <span class="item-value" id="confirm-party"></span>
+                </div>
+                <div class="confirmation-item">
+                    <span class="item-label">Candidate</span>
+                    <span class="item-value" id="confirm-candidate"></span>
+                </div>
+                <div class="confirmation-item">
+                    <span class="item-label">Symbol</span>
+                    <div class="symbol-area">
+                        <img src="" alt="Candidate Symbol" id="confirm-symbol">
+                    </div>
+                </div>
+            </div>
+            <div class="button-area">
+                <button class="back-button">&lt; Back</button>
+                <button class="confirm-button">&#10004; Confirm Vote</button>
+            </div>
+        </div>
+        <div class="footer">
+            <p>Secure Voting System</p>
+            <p>Election Commission of India</p>
+        </div>
+    </div>
+
+    <div class="screen" id="thank-you" style="display: none;">
+        <div class="header">
+            <div class="header-top-bar">
+                <div></div>
+                <div></div>
+            </div>
+            <div class="header-logo-text">
+                <img src="eci_logo.png" alt="ECI Logo" class="header-logo">
+                <div class="header-text">
+                    <h2>Electronic Voting Machine</h2>
+                    <p>Election Commission of India</p>
+                </div>
+            </div>
+        </div>
+        <div class="content">
+            <div class="checkmark-icon">
+                &#10004;
+            </div>
+            <p class="thank-you-text">Thank you for voting!</p>
+        </div>
+        <div class="footer">
+            <p>Secure Voting System</p>
+            <p>Election Commission of India</p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // --- Language Selection ---
+            document.querySelectorAll('.language-buttons button').forEach(button => {
+                button.addEventListener('click', () => {
+                    // In a real application, you would likely store the selected language
+                    // and use it to display the appropriate text throughout the voting process.
+                    // For this MVP, we'll simply move to the next screen.
+                    document.getElementById('language-selection').style.display = 'none';
+                    document.getElementById('voter-id-verification').style.display = 'block';
+                });
+            });
+
+            // --- Voter ID Verification ---
+            document.getElementById('simulate-card-scan').addEventListener('click', () => {
+                // Simulate card scan verification (e.g., show a loading message,
+                // then proceed to the next screen after a delay).
+                document.getElementById('voter-id-verification').style.display = 'none';
+                document.getElementById('voter-information').style.display = 'block';
+
+                // Simulate verification delay (replace with actual verification logic)
+                setTimeout(() => {
+                    document.getElementById('verification-message').textContent = 'Verification Successful!';
+                    setTimeout(() => {
+                        document.getElementById('voter-information').style.display = 'none';
+                        document.getElementById('biometric-verification').style.display = 'block';
+                    }, 1500); // Short delay after success message
+                }, 2000); // Simulate 2 seconds verification time
+            });
+
+            // --- Biometric Verification ---
+            document.getElementById('simulate-fingerprint-scan').addEventListener('click', () => {
+                // Simulate fingerprint scan verification.
+                document.getElementById('biometric-verification').style.display = 'none';
+                document.getElementById('cast-vote').style.display = 'block';
+            });
+
+            // --- Cast Your Vote ---
+            let selectedCandidate = null;
+
+            document.querySelectorAll('.candidate-option').forEach(option => {
+                option.addEventListener('click', () => {
+                    // Remove 'selected' class from any previously selected option
+                    document.querySelectorAll('.candidate-option').forEach(opt => opt.classList.remove('selected'));
+
+                    // Add 'selected' class to the clicked option
+                    option.classList.add('selected');
+
+                    selectedCandidate = {
+                        party: option.dataset.party,
+                        candidate: option.dataset.candidate,
+                        // In a real application, you might store the candidate's symbol image source here
+                        // symbol: option.querySelector('.candidate-logo img').src,
+                    };
+                });
+            });
+
+            document.querySelector('.continue-button').addEventListener('click', () => {
+                if (selectedCandidate) {
+                    // Populate the confirmation screen with the selected candidate's details.
+                    document.getElementById('confirm-party').textContent = selectedCandidate.party;
+                    document.getElementById('confirm-candidate').textContent = selectedCandidate.candidate;
+                    // document.getElementById('confirm-symbol').src = selectedCandidate.symbol;
+
+                    // Show the confirmation screen
+                    document.getElementById('cast-vote').style.display = 'none';
+                    document.getElementById('confirm-vote').style.display = 'block';
+                } else {
+                    alert('Please select a candidate.');
+                }
+            });
+
+            // --- Confirm Your Vote ---
+            document.querySelector('#confirm-vote .back-button').addEventListener('click', () => {
+                // Go back to the cast vote screen
+                document.getElementById('confirm-vote').style.display = 'none';
+                document.getElementById('cast-vote').style.display = 'block';
+            });
+
+            document.querySelector('#confirm-vote .confirm-button').addEventListener('click', () => {
+                // Simulate vote confirmation and show the thank you screen.
+                document.getElementById('confirm-vote').style.display = 'none';
+                document.getElementById('thank-you').style.display = 'block';
+
+                // In a real application, you would send the vote data to the server here.
+                console.log('Vote confirmed:', selectedCandidate);
+            });
+        });
+    </script>
+</body>
+
+</html>
