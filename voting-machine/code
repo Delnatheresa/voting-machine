@@ -417,10 +417,10 @@
             <h4>Face Recognition</h4>
             <p>Please look at the camera for verification</p>
             <div class="voter-info">
-                <p>Name: Rajesh Kumar</p>
+                <p>Name: Aska Maria</p>
                 <p>Voter ID: ABC1234567</p>
-                <p>Age: 35</p>
-                <p>Constituency: New Delhi Central</p>
+                <p>Age: 18</p>
+                <p>Constituency: Kottayam</p>
             </div>
             <p id="verification-message">Verifying your identity....</p>
         </div>
